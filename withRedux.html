@@ -13,6 +13,18 @@
     <div id="control"></div>
     <div id="content"></div>
     <script>
+      function reducer(state, action) {
+        if (state === undefined) {
+          return {
+            contents: [
+              { id: 1, title: 'HTML', desc: 'HTML is static' },
+              { id: 2, title: 'CSS', desc: 'CSS is style' },
+            ],
+          };
+        }
+      }
+      const store = Redux.createStore(reducer);
+
       function Header() {
         document.querySelector('#header').innerHTML = `
         <header>
@@ -22,11 +34,16 @@
       }
 
       function TOC() {
+        let liTags = '';
+        const state = store.getState();
+        state.contents.forEach(
+          (content) =>
+            (liTags += `<li><a href="1.${content.title}">${content.title}</a></li>`)
+        );
         document.querySelector('#toc').innerHTML = `
         <nav>
           <ol>
-            <li><a href="1.html">HTML</a></li>
-            <li><a href="2.CSS">CSS</a></li>
+            ${liTags}
           </ol>
         </nav>`;
       }
@@ -42,7 +59,7 @@
       function Content() {
         document.querySelector('#content').innerHTML = `
           <article>
-            <p>HTML is ... static</p>  
+            <p>HTML is ... static</p>
           </article>
         `;
       }
