@@ -68,9 +68,15 @@
       }
 
       function Content() {
+        const state = store.getState();
+        const selectedId = state.selectedId;
+        const content = state.contents.filter(
+          (content) => content.id === selectedId
+        )[0];
+
         document.querySelector('#content').innerHTML = `
           <article>
-            <p>HTML is ... static</p>
+            <p>${content.desc}</p>
           </article>
         `;
       }
@@ -82,6 +88,7 @@
         Content();
       }
 
+      store.subscribe(render);
       render();
     </script>
   </body>
