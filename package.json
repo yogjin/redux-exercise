@@ -1,0 +1,11 @@
+{
+  "name": "redux-exercise",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "@reduxjs/toolkit": "^1.8.4",
+    "redux": "^4.2.0"
+  }
+}
