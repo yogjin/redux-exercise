@@ -8,22 +8,46 @@
     ></script>
   </head>
   <body>
-    <header>
-      <h1>WEB</h1>
-      <p>Hello, WEB!</p>
-    </header>
-    <nav>
-      <ol>
-        <li><a href="1.html">HTML</a></li>
-        <li><a href="2.CSS">CSS</a></li>
-      </ol>
-    </nav>
-    <article>
-      <ul>
-        <li><a href="/create">create</a></li>
-        <li><button>delete</button></li>
-      </ul>
-    </article>
-    <script></script>
+    <div id="header"></div>
+    <div id="toc"></div>
+    <ul>
+      <li><a href="/create">create</a></li>
+      <li><button>delete</button></li>
+    </ul>
+    <script>
+      function Header() {
+        document.querySelector('#header').innerHTML = `
+        <header>
+          <h1>WEB</h1>
+          <p>Hello, WEB!</p>
+        </header>`;
+      }
+
+      function TOC() {
+        document.querySelector('#toc').innerHTML = `
+        <nav>
+          <ol>
+            <li><a href="1.html">HTML</a></li>
+            <li><a href="2.CSS">CSS</a></li>
+          </ol>
+        </nav>`;
+      }
+
+      function Control() {
+        document.querySelector('#control').innerHTML = `
+        <ul>
+          <li><a href="/create">create</a></li>
+          <li><button>delete</button></li>
+        </ul>`;
+      }
+
+      function render() {
+        Header();
+        TOC();
+        Control();
+      }
+
+      render();
+    </script>
   </body>
 </html>
