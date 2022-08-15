@@ -10,10 +10,8 @@
   <body>
     <div id="header"></div>
     <div id="toc"></div>
-    <ul>
-      <li><a href="/create">create</a></li>
-      <li><button>delete</button></li>
-    </ul>
+    <div id="control"></div>
+    <div id="content"></div>
     <script>
       function Header() {
         document.querySelector('#header').innerHTML = `
@@ -41,10 +39,19 @@
         </ul>`;
       }
 
+      function Content() {
+        document.querySelector('#content').innerHTML = `
+          <article>
+            <p>HTML is ... static</p>  
+          </article>
+        `;
+      }
+
       function render() {
         Header();
         TOC();
         Control();
+        Content();
       }
 
       render();
