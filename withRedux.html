@@ -16,16 +16,30 @@
       function reducer(state, action) {
         if (state === undefined) {
           return {
+            mode: 'read',
             contents: [
-              { id: 1, title: 'HTML', desc: 'HTML is static' },
-              { id: 2, title: 'CSS', desc: 'CSS is style' },
+              { id: '1', title: 'HTML', desc: 'HTML is static' },
+              { id: '2', title: 'CSS', desc: 'CSS is style' },
             ],
-            selectedId: 1,
+            selectedId: '1',
           };
         }
         switch (action.type) {
+          case 'CHANGE_MODE':
+            return { ...state, mode: action.mode };
           case 'SELECT':
-            return { ...state, selectedId: action.id };
+            return { ...state, mode: 'read', selectedId: action.id };
+          case 'CREATE':
+            const newContent = {
+              id: Date.now().toString(),
+              title: action.title,
+              desc: action.desc,
+            };
+            return {
+              ...state,
+              mode: 'read',
+              contents: [...state.contents, newContent],
+            };
           case 'default':
             return state;
         }
@@ -46,10 +60,10 @@
         state.contents.forEach((content, index) => {
           liTags += `<li><a onclick="
             event.preventDefault();
-            const action = { type: 'SELECT', id: ${content.id} };
+            const action = { type: 'SELECT', mode: 'read', id: '${content.id}' };
             store.dispatch(action);
             "
-          href="${index}.${content.title}">${content.title}</a></li>`;
+          href="${content.id}">${content.title}</a></li>`;
         });
         document.querySelector('#toc').innerHTML = `
         <nav>
@@ -60,9 +74,17 @@
       }
 
       function Control() {
+        const state = store.getState();
+
         document.querySelector('#control').innerHTML = `
         <ul>
-          <li><a href="/create">create</a></li>
+          <li>
+            <a onclick="
+              event.preventDefault();
+              const action = {type: 'CHANGE_MODE', mode: 'create'};
+              store.dispatch(action);
+            "
+            href="/create">create</a></li>
           <li><button>delete</button></li>
         </ul>`;
       }
@@ -70,15 +92,32 @@
       function Content() {
         const state = store.getState();
         const selectedId = state.selectedId;
-        const content = state.contents.filter(
-          (content) => content.id === selectedId
-        )[0];
+        const mode = state.mode;
+        if (mode === 'read') {
+          const content = state.contents.filter(
+            (content) => content.id === selectedId
+          )[0];
 
-        document.querySelector('#content').innerHTML = `
+          document.querySelector('#content').innerHTML = `
           <article>
             <p>${content.desc}</p>
           </article>
-        `;
+          `;
+        } else if (mode === 'create') {
+          document.querySelector('#content').innerHTML = `
+          <form onsubmit="
+            event.preventDefault();
+            const title = this.title.value;
+            const desc = this.desc.value;
+            const action = {type: 'CREATE', title, desc};
+            store.dispatch(action);
+          ">
+            <p><input type='text' name='title' placeholder='title'></input></p>
+            <p><textarea name='desc' placeholder='desc'></textarea></p>
+            <p><button>Submit</button></p>
+          </form>
+          `;
+        }
       }
 
       function render() {
