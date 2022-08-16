@@ -21,7 +21,7 @@
               { id: '1', title: 'HTML', desc: 'HTML is static' },
               { id: '2', title: 'CSS', desc: 'CSS is style' },
             ],
-            selectedId: '1',
+            selectedId: null,
           };
         }
         switch (action.type) {
@@ -40,6 +40,12 @@
               mode: 'read',
               contents: [...state.contents, newContent],
             };
+          case 'DELETE':
+            const newContents = state.contents.filter(
+              (content) => content.id !== action.id
+            );
+            const selectedId = null;
+            return { ...state, contents: newContents, selectedId };
           case 'default':
             return state;
         }
@@ -75,7 +81,7 @@
 
       function Control() {
         const state = store.getState();
-
+        const selectedId = state.selectedId;
         document.querySelector('#control').innerHTML = `
         <ul>
           <li>
@@ -85,7 +91,14 @@
               store.dispatch(action);
             "
             href="/create">create</a></li>
-          <li><button>delete</button></li>
+          <li>
+            <button onclick="
+              const action = {type: 'DELETE', id: '${selectedId}'};
+              store.dispatch(action);
+            ">
+              delete
+            </button>
+            </li>
         </ul>`;
       }
 
@@ -93,6 +106,13 @@
         const state = store.getState();
         const selectedId = state.selectedId;
         const mode = state.mode;
+        if (!selectedId) {
+          return (document.querySelector('#content').innerHTML = `
+          <article>
+            <p>Create article!</p>
+          </article>
+          `);
+        }
         if (mode === 'read') {
           const content = state.contents.filter(
             (content) => content.id === selectedId
@@ -114,7 +134,9 @@
           ">
             <p><input type='text' name='title' placeholder='title'></input></p>
             <p><textarea name='desc' placeholder='desc'></textarea></p>
-            <p><button>Submit</button></p>
+            <p>
+              <button>Submit</button>
+            </p>
           </form>
           `;
         }
