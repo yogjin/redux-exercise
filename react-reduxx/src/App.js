@@ -1,18 +1,29 @@
 import { useState } from 'react';
+import { legacy_createStore } from 'redux';
 import './App.css';
+import { Provider, useSelector, useDispatch } from 'react-redux';
+
+function reducer(state, action) {
+  if (state === undefined) {
+    return { number: 1 };
+  }
+  if (action.type === 'INCREASE') {
+    return { ...state, number: state.number + 1 };
+  }
+  const newState = { ...state };
+  return newState;
+}
+const store = legacy_createStore(reducer);
 
 function App() {
-  const [number, setNumber] = useState(0);
-
-  function handleIncrease() {
-    setNumber(number + 1);
-  }
   return (
     <div className="container">
-      <h1>Root: {number}</h1>
+      <h1>Root</h1>
       <div id="grid">
-        <Left1 />
-        <Right1 />
+        <Provider store={store}>
+          <Left1 />
+          <Right1 />
+        </Provider>
       </div>
     </div>
   );
@@ -34,9 +45,10 @@ function Left2(props) {
   );
 }
 function Left3(props) {
+  const number = useSelector((state) => state.number);
   return (
     <div>
-      <h1>Left3:</h1>
+      <h1>Left3:{number}</h1>
     </div>
   );
 }
@@ -57,10 +69,16 @@ function Right2(props) {
   );
 }
 function Right3(props) {
+  const dispatch = useDispatch();
+
   return (
     <div>
       <h1>Right3</h1>
-      <input type="button" value="+"></input>
+      <input
+        type="button"
+        value="+"
+        onClick={() => dispatch({ type: 'INCREASE' })}
+      ></input>
     </div>
   );
 }
