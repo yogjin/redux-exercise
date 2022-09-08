@@ -1,24 +1,31 @@
 import React from 'react';
 import { createStore } from 'redux';
 import { Provider, useSelector, useDispatch } from 'react-redux';
+import { createSlice, configureStore } from '@reduxjs/toolkit';
 
-function reducer(state, action) {
-  if (action.type === 'up') {
-    return { ...state, number: state.number + action.step };
-  }
-  const newState = { ...state };
-  return newState;
-}
-const initialState = { number: 0 };
-const store = createStore(reducer, initialState);
+const counterSlice = createSlice({
+  name: 'counter', // slice 이름
+  initialState: { number: 0 }, // state 초기화
+  reducers: {
+    // 리듀서
+    up: (state, action) => {
+      state.number = state.number + action.payload;
+    },
+  },
+});
+const store = configureStore({
+  reducer: {
+    counter: counterSlice.reducer,
+  },
+});
 
 function Counter() {
-  const count = useSelector((state) => state.number);
+  const count = useSelector((state) => state.counter.number);
   const dispatch = useDispatch();
   return (
     <>
       <h1>{count}</h1>
-      <button onClick={() => dispatch({ type: 'up', step: 2 })}>+</button>
+      <button onClick={() => dispatch(counterSlice.actions.up(2))}>+</button>
     </>
   );
 }
