@@ -4,12 +4,15 @@ import './App.css';
 function App() {
   const [number, setNumber] = useState(0);
 
+  function handleIncrease() {
+    setNumber(number + 1);
+  }
   return (
     <div className="container">
       <h1>Root: {number}</h1>
       <div id="grid">
         <Left1 number={number} />
-        <Right1 />
+        <Right1 onIncrease={handleIncrease} />
       </div>
     </div>
   );
@@ -41,7 +44,7 @@ function Right1(props) {
   return (
     <div>
       <h1>Right1</h1>
-      <Right2 />
+      <Right2 onIncrease={props.onIncrease} />
     </div>
   );
 }
@@ -49,7 +52,7 @@ function Right2(props) {
   return (
     <div>
       <h1>Right2</h1>
-      <Right3 />
+      <Right3 onIncrease={props.onIncrease} />
     </div>
   );
 }
@@ -57,7 +60,7 @@ function Right3(props) {
   return (
     <div>
       <h1>Right3</h1>
-      <input type="button" value="+"></input>
+      <input type="button" value="+" onClick={props.onIncrease}></input>
     </div>
   );
 }
